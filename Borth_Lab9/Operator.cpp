@@ -84,8 +84,78 @@ void Operator::run() {
         }
         // 5. Test performance of heaps - Complete!
         else if (option == 5) {
-          cout << "\nOutput:  The leaf nodes are: ";
-          //IMDB.printLeaves();
+          srand (time(NULL));   //Initialize random seed: This means every time you run the program it will change the numbers generated
+
+          int m = 1000000;
+          int random_number;
+          int size = 10;
+
+          int inputSize [size];
+          clock_t start, endBuild, endDelete;
+          double buildTime [size];
+          double deleteTime [size];
+
+          for(int i = 0; i < size; i++) {
+            inputSize[i] = 0;
+            buildTime[i] = 0.000000;
+            deleteTime[i] = 0.000000;
+          }
+
+          for (int j = 0; j < size; j++) {
+            if (j < 5) {
+              start = clock();
+              inputSize[j] = floor (0.1 * m * (j + 1));
+              for(int i = 0; i < floor (0.1 * m * (j + 1)); i++) {
+                random_number = rand() % 5000000 + 1;
+                lHeap.add(lHeap.getRoot(), random_number);
+              }
+              endBuild = clock();
+              buildTime[j] = double(endBuild - start) / double(CLOCKS_PER_SEC);
+              lHeap.remove();
+              endDelete = clock();
+              deleteTime[j] = double(endDelete - start) / double(CLOCKS_PER_SEC);
+              lHeap.clear();
+            } else {
+              start = clock();
+              inputSize[j] = floor (0.1 * m * (j - 4));
+              for(int i = 0; i < floor (0.1 * m * (j - 4)); i++) {
+                random_number = rand() % 5000000 + 1;
+                sqHeap.add(sqHeap.getRoot(), random_number);
+              }
+              endBuild = clock();
+              buildTime[j] = double(endBuild - start) / double(CLOCKS_PER_SEC);
+              sqHeap.remove();
+              endDelete = clock();
+              deleteTime[j] = double(endDelete - start) / double(CLOCKS_PER_SEC);
+              sqHeap.clear();
+            }
+          }
+
+          cout << "______________________Performance (Min Leftist Heap)_______________________\n";
+          cout << "___________________________________________________________________________\n";
+          cout << "Input size:";
+          for (int i = 0; i < size/2; i++)
+            cout << "\t|\t" << inputSize[i];
+          cout << "\nBuild (s):\t";
+          for (int i = 0; i < size/2; i++)
+            cout << "|\t" << setprecision(5) << buildTime[i];
+          cout << "\nDelete min (s):\t";
+          for (int i = 0; i < size/2; i++)
+            cout << "|\t" << setprecision(5) << deleteTime[i];
+          cout << "\n___________________________________________________________________________\n\n\n";
+
+          cout << "______________________Performance (Min Skew Heap)__________________________\n";
+          cout << "___________________________________________________________________________\n";
+          cout << "Input size:";
+          for (int i = size/2; i < size; i++)
+            cout << "\t|\t" << inputSize[i];
+          cout << "\nBuild (s):\t";
+          for (int i = size/2; i < size; i++)
+            cout << "|\t" << setprecision(5) << buildTime[i];
+          cout << "\nDelete min (s):\t";
+          for (int i = size/2; i < size; i++)
+            cout << "|\t" << setprecision(5) << deleteTime[i];
+          cout << "\n___________________________________________________________________________\n\n\n";
         }
         // 6. Exit - Complete!
         else if (option == 6) {

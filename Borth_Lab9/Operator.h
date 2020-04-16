@@ -13,8 +13,13 @@
 
 #include "LeftistHeap.h"
 #include "SkewHeap.h"
+#include <stdlib.h>
+#include <math.h>
+#include <iomanip>
 #include <string>
 #include <stdexcept>
+#include <fstream>
+#include <limits>
 using namespace std;
 
 class Operator
