@@ -12,6 +12,7 @@
 #define OPERATOR_H
 
 #include "LeftistHeap.h"
+#include "SkewHeap.h"
 #include <string>
 #include <stdexcept>
 using namespace std;
@@ -25,6 +26,7 @@ private:
   ifstream inFile;
 
   LeftistHeap<int> lHeap;
+  SkewHeap<int> sqHeap;
 
 public:
 /**
@@ -34,6 +36,8 @@ public:
 	void run();
 
   void buildLeftistHeap();
+
+  void buildSkewHeap();
 
 /**
 * @pre none.

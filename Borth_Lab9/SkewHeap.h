@@ -1,15 +1,15 @@
 /* -----------------------------------------------------------------------------
  *
- * File Name:  LeftistHeap.h
+ * File Name:  SkewHeap.h
  * Author: Marco Borth
  * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
- * Description:  LeftistHeap Template Class is defined.
- * Date: 4/14/20
+ * Description:  SkewHeap Template Class is defined.
+ * Date: 4/16/20
  *
  ---------------------------------------------------------------------------- */
 
-#ifndef LEFTISTHEAP_H
-#define LEFTISTHEAP_H
+#ifndef SKEWHEAP_H
+#define SKEWHEAP_H
 
 #include "BinaryNode.h"
 #include <string>
@@ -19,7 +19,7 @@
 using namespace std;
 
 template <typename T>
-class LeftistHeap
+class SkewHeap
 {
 private:
   BinaryNode<T>* m_root;
@@ -36,6 +36,8 @@ private:
 */
   void addRec(BinaryNode<T>* curSubTree, T entry, int depth);
 
+  void merge(BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree, int depth);
+
 /*
 * @pre none.
 * @param curSubTree is a valid BinaryNode<T> pointer.
@@ -50,13 +52,13 @@ public:
 * @pre define T object.
 * @post MaxHeap object is constructed.
 */
-  LeftistHeap();
+  SkewHeap();
 
 /*
 * @pre none.
 * @post ~MaxHeap clears all BinaryNodes and deletes m_arr.
 */
-  ~LeftistHeap();
+  ~SkewHeap();
 
 /*
 * @pre none.
@@ -101,6 +103,6 @@ public:
   void levelOrder();
 };
 
-#include "LeftistHeap.cpp"
+#include "SkewHeap.cpp"
 
 #endif

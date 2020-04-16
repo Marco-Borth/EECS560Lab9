@@ -56,7 +56,7 @@ void Operator::run() {
           cout << "\n\n";
           lHeap.clear();
         }
-        // 2- AddMovie - Complete!
+        // 2. Test delete min - min leftist heap - Complete!
         else if (option == 2) {
           buildLeftistHeap();
           lHeap.remove();
@@ -65,15 +65,24 @@ void Operator::run() {
           cout << "\n\n";
           lHeap.clear();
         }
-        // 3- RemoveMovie - Complete!
+        // 3. Test build - min skew heap - Complete!
         else if (option == 3) {
-
+          buildSkewHeap();
+          cout << "\nLevel order of min skew heap: ";
+          sqHeap.levelOrder();
+          cout << "\n\n";
+          sqHeap.clear();
         }
-        // 4- Leaf - Complete!
+        // 4. Test delete min - min skew heap - Complete!
         else if (option == 4) {
-          cout << "\nPlease enter the name of your movie which you want to test as a leaf node:\n> ";
+          buildSkewHeap();
+          sqHeap.remove();
+          cout << "\nLevel order of min skew heap: ";
+          sqHeap.levelOrder();
+          cout << "\n\n";
+          sqHeap.clear();
         }
-        // 5- PrintLeaves - Complete!
+        // 5. Test performance of heaps - Complete!
         else if (option == 5) {
           cout << "\nOutput:  The leaf nodes are: ";
           //IMDB.printLeaves();
@@ -116,6 +125,35 @@ void Operator::buildLeftistHeap() {
         RatingInputFailures++;
       } else {
         lHeap.add(lHeap.getRoot(), input);
+      }
+    }
+
+    if(RatingInputFailures > 1)
+      cout << "ERROR! Invalid Input for Movie Ratings Detected: " << RatingInputFailures << "\n";
+  }
+
+  // Close File.
+  inFile.close();
+}
+
+void Operator::buildSkewHeap() {
+  //Open File.
+  inFile.open(file);
+
+  if (!inFile.is_open()) {
+    cout << "File name not valid!\n\n";
+  } else {
+    int RatingInputFailures = 0;
+    int input;
+    while (!inFile.eof()) {
+      inFile >> input;
+
+      if(inFile.fail()) {
+        inFile.clear();
+        inFile.ignore(numeric_limits<streamsize>::max(),'\n');
+        RatingInputFailures++;
+      } else {
+        sqHeap.add(sqHeap.getRoot(), input);
       }
     }
 
