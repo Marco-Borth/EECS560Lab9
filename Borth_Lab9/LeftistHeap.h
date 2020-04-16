@@ -11,6 +11,7 @@
 #ifndef LEFTISTHEAP_H
 #define LEFTISTHEAP_H
 
+#include "LinkedList.h"
 #include "BinaryNode.h"
 #include <string>
 #include <fstream>
@@ -42,6 +43,8 @@ private:
 * @post deletes every BinaryNode in BinarySearchTree in postOrder.
 */
   void postOrderDelete(BinaryNode<T>* curSubTree);
+
+  void levelOrderRec(BinaryNode<T>* curSubTree, int depth, int targetDepth);
 
 public:
 /*
@@ -95,6 +98,8 @@ public:
 * @post deletes all BinaryNodes within m_arr.
 */
   void clear();
+
+  void levelOrder();
 };
 
 #include "LeftistHeap.cpp"

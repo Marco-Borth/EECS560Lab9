@@ -22,6 +22,7 @@ private:
   int option;
 
   string file;
+  ifstream inFile;
 
   LeftistHeap<int> lHeap;
 
@@ -31,6 +32,8 @@ public:
 * @post stops running after code exits loop.
 */
 	void run();
+
+  void buildLeftistHeap();
 
 /**
 * @pre none.

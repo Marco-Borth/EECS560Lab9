@@ -133,11 +133,11 @@ void LeftistHeap<T>::remove() {
 			m_root = h2;
 			BinaryNode<T>* h2rightChild = m_root->getRight();
 			if (h2rightChild == nullptr) {
-				m_root->setRight(h1);
+				m_root->inheritRight(h1);
 				if (m_root->getRank() == 2 && m_root->getLeft()->getRank() < m_root->getRight()->getRank()) {
 					BinaryNode<T>* temp = m_root->getLeft();
-					m_root->setLeft(m_root->getRight());
-					m_root->setRight(temp);
+					m_root->inheritLeft(m_root->getRight());
+					m_root->inheritRight(temp);
 				} else {
 					BinaryNode<T>* leftChild = m_root->getLeft();
 					BinaryNode<T>* rightChild = m_root->getRight();
@@ -175,4 +175,28 @@ void LeftistHeap<T>::postOrderDelete(BinaryNode<T>* curSubTree) {
 		m_root = nullptr;
 	}
 	nodeCount--;
+}
+
+template <typename T>
+void LeftistHeap<T>::levelOrder() {
+	for(int i = 0; i <= m_height; i++) {
+		levelOrderRec(m_root, 0, i);
+	}
+}
+
+template <typename T>
+void LeftistHeap<T>::levelOrderRec(BinaryNode<T>* curSubTree, int depth, int targetDepth) {
+	if (depth == targetDepth) {
+		cout << curSubTree->getEntry() << " ";
+	} else {
+		depth++;
+
+		if (curSubTree->getLeft() != nullptr) {
+			levelOrderRec(curSubTree->getLeft(), depth, targetDepth);
+		}
+
+		if (curSubTree->getRight() != nullptr) {
+			levelOrderRec(curSubTree->getRight(), depth, targetDepth);
+		}
+	}
 }
