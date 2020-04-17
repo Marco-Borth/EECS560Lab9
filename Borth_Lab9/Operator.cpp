@@ -92,8 +92,10 @@ void Operator::run() {
 
           int inputSize [size];
           clock_t start, endBuild, endDelete;
+          clock_t endInsert;
           double buildTime [size];
           double deleteTime [size];
+          double insertTime = 0;
 
           for(int i = 0; i < size; i++) {
             inputSize[i] = 0;
@@ -101,32 +103,55 @@ void Operator::run() {
             deleteTime[i] = 0.000000;
           }
 
-          for (int j = 0; j < size; j++) {
+          for (int j = 3; j < size; j++) {
             if (j < 5) {
               start = clock();
               inputSize[j] = floor (0.1 * m * (j + 1));
+              cout << "\n\n";
               for(int i = 0; i < floor (0.1 * m * (j + 1)); i++) {
                 random_number = rand() % 5000000 + 1;
                 lHeap.add(lHeap.getRoot(), random_number);
+                endInsert = clock();
+                if (i % 1000 == 0) {
+                  insertTime = double(endInsert - start) / double(CLOCKS_PER_SEC);
+                  cout << "Test " << j + 1 << ": Size " << inputSize[j] << " Leftist Heap: ";
+                  cout << "Node " << i << ", ( " << setprecision(10) << random_number << " ),";
+                  cout << " Inserted at " << setprecision(5) << insertTime << " seconds.\n";
+                }
+
               }
               endBuild = clock();
               buildTime[j] = double(endBuild - start) / double(CLOCKS_PER_SEC);
+              cout << "\nLeftist Heap at size " << inputSize[j] << " Build Complete at " << buildTime[j] << " seconds.\n";
+              start = clock();
               lHeap.remove();
               endDelete = clock();
               deleteTime[j] = double(endDelete - start) / double(CLOCKS_PER_SEC);
+              cout << "Leftist Heap at size " << inputSize[j] << " DeleteMin Complete at " << deleteTime[j] << " seconds.\n\n";
               lHeap.clear();
             } else {
               start = clock();
               inputSize[j] = floor (0.1 * m * (j - 4));
+              cout << "\n\n";
               for(int i = 0; i < floor (0.1 * m * (j - 4)); i++) {
                 random_number = rand() % 5000000 + 1;
                 sqHeap.add(sqHeap.getRoot(), random_number);
+                endInsert = clock();
+                insertTime = double(endInsert - start) / double(CLOCKS_PER_SEC);
+                if (i % 1000 == 0) {
+                  cout << "Test " << j - 4 << ": Size " << inputSize[j] << " Sqew Heap: ";
+                  cout << "Node " << i << ", ( " << setprecision(10) << random_number << " ),";
+                  cout << " Inserted at " << setprecision(5) << insertTime << " seconds.\n";
+                }
               }
               endBuild = clock();
               buildTime[j] = double(endBuild - start) / double(CLOCKS_PER_SEC);
+              cout << "\nSqew Heap at size " << inputSize[j] << " Build Complete.\n";
+              start = clock();
               sqHeap.remove();
               endDelete = clock();
               deleteTime[j] = double(endDelete - start) / double(CLOCKS_PER_SEC);
+              cout << "Sqew Heap at size " << inputSize[j] << " DeleteMin Complete.\n\n";
               sqHeap.clear();
             }
           }

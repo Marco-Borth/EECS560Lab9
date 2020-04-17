@@ -34,7 +34,11 @@ private:
 * @post if left or right != nullptr, the BinaryNode is to be then added to either curSubTree->getLeft or curSubTree-> getRight.
 * @post no duplicates are to be allowed.
 */
-  void addRec(BinaryNode<T>* curSubTree, T entry, int depth);
+  void addRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, T entry, int depth);
+
+  BinaryNode<T>* mergeNow(BinaryNode<T>* h1, BinaryNode<T>* h2);
+
+  void mergeRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree);
 
 /*
 * @pre none.
@@ -44,6 +48,10 @@ private:
   void postOrderDelete(BinaryNode<T>* curSubTree);
 
   void levelOrderRec(BinaryNode<T>* curSubTree, int depth, int targetDepth);
+
+  void measureHeight();
+
+  void incrementHeight(BinaryNode<T>* curSubTree, int depth);
 
 public:
 /*
@@ -91,6 +99,8 @@ public:
   void add(BinaryNode<T>* curSubTree, T entry);
 
   void remove();
+
+  BinaryNode<T>* merge(BinaryNode<T>* h1, BinaryNode<T>* h2);
 
 /*
 * @pre none.

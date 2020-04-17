@@ -50,43 +50,37 @@ void LeftistHeap<T>::add(BinaryNode<T>* curSubTree, T entry) {
 		m_root = new BinaryNode<T>(entry);
 		nodeCount++;
 	} else {
-		addRec(m_root, entry, 0);
+		BinaryNode<T>* temp = new BinaryNode<T>(entry);
+		merge(temp, m_root);
+		//addRec(m_root, m_root, entry, 0);
 	}
 }
 
 template <typename T>
-void LeftistHeap<T>::addRec(BinaryNode<T>* curSubTree, T entry, int depth) {
+void LeftistHeap<T>::addRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, T entry, int depth) {
 	depth++;
-	if (curSubTree->getLeft() == nullptr) {
-		curSubTree->setLeft(entry);
-		nodeCount++;
-		if (curSubTree->getEntry() > curSubTree->getLeft()->getEntry()) {
-			T temp = curSubTree->getLeft()->getEntry();
-			curSubTree->getLeft()->setEntry(curSubTree->getEntry());
-			curSubTree->setEntry(temp);
-		}
-	} else if (curSubTree->getRight() == nullptr) {
-		curSubTree->setRight(entry);
-		nodeCount++;
-		if (curSubTree->getEntry() > curSubTree->getRight()->getEntry()) {
-			T temp = curSubTree->getRight()->getEntry();
-			curSubTree->getRight()->setEntry(curSubTree->getEntry());
-			curSubTree->setEntry(temp);
-		}
-	} else if (curSubTree->getLeft()->getEntry() >= curSubTree->getRight()->getEntry()) {
-		addRec(curSubTree->getLeft(), entry, depth);
-		if (curSubTree->getEntry() > curSubTree->getLeft()->getEntry()) {
-			T temp = curSubTree->getLeft()->getEntry();
-			curSubTree->getLeft()->setEntry(curSubTree->getEntry());
-			curSubTree->setEntry(temp);
-		}
+	if (curSubTree->getRight() != nullptr) {
+		addRec(curSubTree, curSubTree->getRight(), entry, depth);
 	} else {
-		addRec(curSubTree->getRight(), entry, depth);
-		if (curSubTree->getEntry() > curSubTree->getRight()->getEntry()) {
-			T temp = curSubTree->getRight()->getEntry();
-			curSubTree->getRight()->setEntry(curSubTree->getEntry());
-			curSubTree->setEntry(temp);
+		if (entry >= curSubTree->getEntry()) {
+			if (curSubTree->getLeft() == nullptr) {
+				curSubTree->setLeft(entry);
+			} else {
+				curSubTree->setRight(entry);
+			}
+		} else {
+			if (curSubTree != m_root) {
+				parentSubTree->inheritRight(nullptr);
+				parentSubTree->setRight(entry);
+				parentSubTree->getRight()->inheritLeft(curSubTree);
+			} else {
+				BinaryNode<T>* leftChild = m_root;
+				m_root = nullptr;
+				m_root = new BinaryNode<T>(entry);
+				m_root->inheritLeft(leftChild);
+			}
 		}
+		nodeCount++;
 	}
 
 	if (curSubTree->getRank() == 2 && curSubTree->getLeft()->getRank() < curSubTree->getRight()->getRank()) {
@@ -96,7 +90,7 @@ void LeftistHeap<T>::addRec(BinaryNode<T>* curSubTree, T entry, int depth) {
 		curSubTree->inheritRight(leftChild);
 	}
 
-	if(depth > m_height)
+	if (depth > m_height)
 		m_height = depth;
 }
 
@@ -106,6 +100,7 @@ void LeftistHeap<T>::remove() {
 		m_root->~BinaryNode();
 		m_root = nullptr;
 		nodeCount = 0;
+		m_height = 0;
 	}
 	else if (m_root->getLeft() != nullptr && m_root->getRight() == nullptr) // m_root has only left child.
 	{
@@ -124,31 +119,108 @@ void LeftistHeap<T>::remove() {
 		nodeCount--;
 	}
 	else {
-		BinaryNode<T>* temp = m_root;
 		BinaryNode<T>* h1 = m_root->getLeft();
 		BinaryNode<T>* h2 = m_root->getRight();
-		temp->~BinaryNode();
+		/*
+		BinaryNode<T>* h1rightChild = h1->getRight();
+		BinaryNode<T>* h2rightChild = h2->getRight();
+		h1->inheritRight(nullptr);
+		h2->inheritRight(nullptr);
+		*/
+		m_root->~BinaryNode();
+		nodeCount--;
 
+		m_root = merge(h1, h2);
+
+		/*
 		if (h1->getEntry() > h2->getEntry()) {
-			m_root = h2;
-			BinaryNode<T>* h2rightChild = m_root->getRight();
-			if (h2rightChild == nullptr) {
-				m_root->inheritRight(h1);
-				if (m_root->getRank() == 2 && m_root->getLeft()->getRank() < m_root->getRight()->getRank()) {
-					BinaryNode<T>* temp = m_root->getLeft();
-					m_root->inheritLeft(m_root->getRight());
-					m_root->inheritRight(temp);
-				} else {
-					BinaryNode<T>* leftChild = m_root->getLeft();
-					BinaryNode<T>* rightChild = m_root->getRight();
-					m_root->inheritLeft(rightChild);
-					m_root->inheritRight(leftChild);
+			m_root = merge(h1rightChild, h2rightChild);
+			m_root = merge(h1, h1rightChild);
+			m_root = merge(h2, h1);
+		} else {
+			m_root = merge(h2rightChild, h1rightChild);
+			m_root = merge(h2, h2rightChild);
+			m_root = merge(h1, h2);
+		}
+		*/
+	}
+
+	if (nodeCount == 0) {
+		m_height = 0;
+	} else {
+		measureHeight();
+	}
+}
+
+template <typename T>
+BinaryNode<T>* LeftistHeap<T>::merge(BinaryNode<T>* h1, BinaryNode<T>* h2) {
+	if (h1 != nullptr && h2 == nullptr) {
+		return h1;
+	} else if (h1 == nullptr && h2 != nullptr) {
+		return h2;
+	} else if (h1 != nullptr && h2 != nullptr) {
+		if (h1->getEntry() < h2->getEntry()) {
+			BinaryNode<T>* temp = nullptr;
+			temp = mergeNow(h1, h2);
+			return temp;
+		} else {
+			BinaryNode<T>* temp = nullptr;
+			temp = mergeNow(h2, h1);
+			return temp;
+		}
+		//mergeRec(h1, h1, h2);
+		return h1;
+	} else {
+		return nullptr;
+	}
+}
+
+template <typename T>
+BinaryNode<T>* LeftistHeap<T>::mergeNow(BinaryNode<T>* h1, BinaryNode<T>* h2)
+{
+    if (h1->getLeft() == nullptr)
+        h1->inheritLeft(h2);
+    else {
+        h1->inheritRight(merge(h1->getRight(), h2));
+        if (h1->getLeft()->getRank() < h1->getRight()->getRank()) {
+					BinaryNode<T>* leftChild = h1->getLeft();
+					BinaryNode<T>* rightChild = h1->getRight();
+					h1->inheritLeft(rightChild);
+					h1->inheritRight(leftChild);
 				}
+    }
+    return h1;
+}
+
+template <typename T>
+void LeftistHeap<T>::mergeRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree) {
+	if (curSubTree->getRight() != nullptr) {
+		mergeRec(curSubTree, curSubTree->getRight(), otherSubTree);
+	} else {
+		if (otherSubTree->getEntry() >= curSubTree->getEntry()) {
+			if (curSubTree->getLeft() == nullptr) {
+				curSubTree->inheritLeft(otherSubTree);
+			} else {
+				curSubTree->inheritRight(otherSubTree);
 			}
 		} else {
-			m_root = h1;
-			BinaryNode<T>* leftgrandrightChild = m_root->getRight();
+			if (curSubTree != m_root) {
+				parentSubTree->inheritRight(nullptr);
+				parentSubTree->inheritRight(otherSubTree);
+				parentSubTree->getRight()->inheritLeft(curSubTree);
+			} else {
+				BinaryNode<T>* leftChild = m_root;
+				m_root = otherSubTree;
+				m_root->inheritLeft(leftChild);
+			}
 		}
+	}
+
+	if (curSubTree->getRank() == 2 && curSubTree->getLeft()->getRank() < curSubTree->getRight()->getRank()) {
+		BinaryNode<T>* leftChild = curSubTree->getLeft();
+		BinaryNode<T>* rightChild = curSubTree->getRight();
+		curSubTree->inheritLeft(rightChild);
+		curSubTree->inheritRight(leftChild);
 	}
 }
 
@@ -179,6 +251,7 @@ void LeftistHeap<T>::postOrderDelete(BinaryNode<T>* curSubTree) {
 
 template <typename T>
 void LeftistHeap<T>::levelOrder() {
+	measureHeight();
 	for(int i = 0; i <= m_height; i++) {
 		levelOrderRec(m_root, 0, i);
 	}
@@ -186,17 +259,49 @@ void LeftistHeap<T>::levelOrder() {
 
 template <typename T>
 void LeftistHeap<T>::levelOrderRec(BinaryNode<T>* curSubTree, int depth, int targetDepth) {
-	if (depth == targetDepth) {
-		cout << curSubTree->getEntry() << " ";
-	} else {
-		depth++;
+	if (curSubTree != nullptr) {
+		if (depth == targetDepth) {
+			cout << curSubTree->getEntry() << " ";
+		} else {
+			depth++;
 
-		if (curSubTree->getLeft() != nullptr) {
-			levelOrderRec(curSubTree->getLeft(), depth, targetDepth);
-		}
+			if (curSubTree->getLeft() != nullptr) {
+				levelOrderRec(curSubTree->getLeft(), depth, targetDepth);
+			}
 
-		if (curSubTree->getRight() != nullptr) {
-			levelOrderRec(curSubTree->getRight(), depth, targetDepth);
+			if (curSubTree->getRight() != nullptr) {
+				levelOrderRec(curSubTree->getRight(), depth, targetDepth);
+			}
 		}
+	}
+}
+
+template <typename T>
+void LeftistHeap<T>::measureHeight() {
+	m_height = 0;
+
+	if (m_root->getLeft() != nullptr) {
+		incrementHeight(m_root->getLeft(), 0);
+	}
+
+	if (m_root->getRight() != nullptr) {
+		incrementHeight(m_root->getRight(), 0);
+	}
+}
+
+template <typename T>
+void LeftistHeap<T>::incrementHeight(BinaryNode<T>* curSubTree, int depth) {
+	depth++;
+
+	if (depth > m_height) {
+		m_height++;
+	}
+
+	if (curSubTree->getLeft() != nullptr) {
+		incrementHeight(curSubTree->getLeft(), depth);
+	}
+
+	if (curSubTree->getRight() != nullptr) {
+		incrementHeight(curSubTree->getRight(), depth);
 	}
 }
