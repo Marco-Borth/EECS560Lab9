@@ -2,9 +2,9 @@
  *
  * File Name:  Executive.cpp
  * Author: Marco Borth
- * Assignment:   EECS-560 Lab 2 - Implementation of Hash Table
+ * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
  * Description:  Executive Class creates and runs the Operator class.
- * Date: 2/4/20
+ * Date: 4/19/20
  *
  ---------------------------------------------------------------------------- */
 #include "Executive.h"

@@ -2,9 +2,9 @@
  *
  * File Name:  main.cpp
  * Author: Marco Borth
- * Assignment:   EECS-560 Lab 3 - Implementation of Hash Table (Closed Hashing)
- * Description:  This lab will contain an implementation of an interactive Hash Table (Closed Hashing).
- * Date: 2/11/20
+ * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
+ * Description:  This lab will contain an implementation of a LeftistHeap and SkewHeap Test.
+ * Date: 4/19/20
  *
  ---------------------------------------------------------------------------- */
 //Start your program.

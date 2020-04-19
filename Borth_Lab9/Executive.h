@@ -2,9 +2,9 @@
  *
  * File Name:  Executive.h
  * Author: Marco Borth
- * Assignment:   EECS-560 Lab 2 - Implementation of Hash Table
+ * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
  * Description:  Executive Class is defined.
- * Date: 2/4/20
+ * Date: 4/19/20
  *
  ---------------------------------------------------------------------------- */
 #ifndef EXECUTIVE_H
