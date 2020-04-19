@@ -46,6 +46,31 @@ BinaryNode<T>* SkewHeap<T>::getRoot() const {
 
 template <typename T>
 void SkewHeap<T>::add(BinaryNode<T>* curSubTree, T entry) {
+	BinaryNode<T>* temp = new BinaryNode<T>(entry);
+	nodeCount++;
+	m_root = merge(m_root, temp);
+
+	/*
+	if (m_root == nullptr) {
+		m_root = new BinaryNode<T>(entry);
+		nodeCount++;
+	} else if (m_root->getRight() == nullptr) {
+		if (entry >= curSubTree->getEntry()) {
+			curSubTree->setRight(entry);
+		} else {
+			BinaryNode<T>* leftChild = m_root;
+			m_root = nullptr;
+			m_root = new BinaryNode<T>(entry);
+			m_root->inheritLeft(leftChild);
+		}
+	} else {
+		BinaryNode<T>* temp = new BinaryNode<T>(entry);
+		nodeCount++;
+		m_root = merge(m_root, temp);
+		//addRec(m_root, entry, 0);
+	}
+	*/
+	/*
 	if (m_root == nullptr) {
 		m_root = new BinaryNode<T>(entry);
 		nodeCount++;
@@ -76,11 +101,34 @@ void SkewHeap<T>::add(BinaryNode<T>* curSubTree, T entry) {
 	} else {
 		addRec(m_root, entry, 0);
 	}
+	*/
 }
 
 template <typename T>
 void SkewHeap<T>::addRec(BinaryNode<T>* curSubTree, T entry, int depth) {
 	depth++;
+	if (curSubTree->getRight() != nullptr) {
+		addRec(curSubTree->getRight(), entry, depth);
+	} else {
+		if (entry >= curSubTree->getEntry()) {
+			curSubTree->setRight(entry);
+		} else {
+			if (curSubTree != m_root) {
+				//parentSubTree->inheritRight(nullptr);
+				//parentSubTree->setRight(entry);
+				//parentSubTree->getRight()->inheritLeft(curSubTree);
+			} else {
+				BinaryNode<T>* leftChild = m_root;
+				m_root = nullptr;
+				m_root = new BinaryNode<T>(entry);
+				m_root->inheritLeft(leftChild);
+			}
+		}
+	}
+	/*
+	if (curSubTree->getRight() != nullptr) {
+		addRec(curSubTree->getRight(), entry, depth);
+	}
 	if (curSubTree->getRight() != nullptr) {
 		addRec(curSubTree->getRight(), entry, depth);
 	} else {
@@ -92,6 +140,7 @@ void SkewHeap<T>::addRec(BinaryNode<T>* curSubTree, T entry, int depth) {
 			curSubTree->setEntry(temp);
 		}
 	}
+	*/
 
 	BinaryNode<T>* leftChild = curSubTree->getLeft();
 	BinaryNode<T>* rightChild = curSubTree->getRight();
@@ -126,11 +175,13 @@ void SkewHeap<T>::remove() {
 		nodeCount--;
 	}
 	else {
-		BinaryNode<T>* temp = m_root;
 		BinaryNode<T>* h1 = m_root->getLeft();
 		BinaryNode<T>* h2 = m_root->getRight();
-		temp->~BinaryNode();
+		m_root->~BinaryNode();
+		nodeCount--;
 
+		m_root = merge(h1, h2);
+		/*
 		if (h1->getEntry() > h2->getEntry()) {
 			m_root = h2;
 			BinaryNode<T>* h2rightChild = m_root->getRight();
@@ -151,11 +202,45 @@ void SkewHeap<T>::remove() {
 			m_root = h1;
 			BinaryNode<T>* leftgrandrightChild = m_root->getRight();
 		}
+		*/
+	}
+
+	if (nodeCount == 0) {
+		m_height = 0;
+	} else {
+		measureHeight();
 	}
 }
 
 template <typename T>
-void SkewHeap<T>::merge(BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree, int depth) {
+BinaryNode<T>* SkewHeap<T>::merge(BinaryNode<T>* h1, BinaryNode<T>* h2) {
+	if (h1 == nullptr) {
+		return h2;
+	}
+
+	if (h2 == nullptr) {
+		return h1;
+	}
+
+	if (h1->getEntry() > h2->getEntry()) {
+		BinaryNode<T>* temp = nullptr;
+		temp = h1;
+		h1 = h2;
+		h2 = temp;
+	}
+
+	BinaryNode<T>* leftChild = h1->getLeft();
+	BinaryNode<T>* rightChild = h1->getRight();
+	h1->inheritLeft(rightChild);
+	h1->inheritRight(leftChild);
+
+	h1->inheritLeft(merge(h2, h1->getLeft()));
+
+	return h1;
+}
+
+template <typename T>
+void SkewHeap<T>::mergeRec(BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree, int depth) {
 	depth++;
 	if (curSubTree->getRight() != nullptr) {
 		merge(curSubTree->getRight(), otherSubTree, depth);
@@ -241,6 +326,7 @@ void SkewHeap<T>::postOrderDelete(BinaryNode<T>* curSubTree) {
 
 template <typename T>
 void SkewHeap<T>::levelOrder() {
+	measureHeight();
 	for(int i = 0; i <= m_height; i++) {
 		levelOrderRec(m_root, 0, i);
 	}
@@ -260,5 +346,35 @@ void SkewHeap<T>::levelOrderRec(BinaryNode<T>* curSubTree, int depth, int target
 		if (curSubTree->getRight() != nullptr) {
 			levelOrderRec(curSubTree->getRight(), depth, targetDepth);
 		}
+	}
+}
+
+template <typename T>
+void SkewHeap<T>::measureHeight() {
+	m_height = 0;
+
+	if (m_root->getLeft() != nullptr) {
+		incrementHeight(m_root->getLeft(), 0);
+	}
+
+	if (m_root->getRight() != nullptr) {
+		incrementHeight(m_root->getRight(), 0);
+	}
+}
+
+template <typename T>
+void SkewHeap<T>::incrementHeight(BinaryNode<T>* curSubTree, int depth) {
+	depth++;
+
+	if (depth > m_height) {
+		m_height++;
+	}
+
+	if (curSubTree->getLeft() != nullptr) {
+		incrementHeight(curSubTree->getLeft(), depth);
+	}
+
+	if (curSubTree->getRight() != nullptr) {
+		incrementHeight(curSubTree->getRight(), depth);
 	}
 }

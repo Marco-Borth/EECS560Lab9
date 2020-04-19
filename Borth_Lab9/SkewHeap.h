@@ -36,7 +36,7 @@ private:
 */
   void addRec(BinaryNode<T>* curSubTree, T entry, int depth);
 
-  void merge(BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree, int depth);
+  void mergeRec(BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree, int depth);
 
 /*
 * @pre none.
@@ -46,6 +46,10 @@ private:
   void postOrderDelete(BinaryNode<T>* curSubTree);
 
   void levelOrderRec(BinaryNode<T>* curSubTree, int depth, int targetDepth);
+
+  void measureHeight();
+
+  void incrementHeight(BinaryNode<T>* curSubTree, int depth);
 
 public:
 /*
@@ -93,6 +97,8 @@ public:
   void add(BinaryNode<T>* curSubTree, T entry);
 
   void remove();
+
+  BinaryNode<T>* merge(BinaryNode<T>* h1, BinaryNode<T>* h2);
 
 /*
 * @pre none.

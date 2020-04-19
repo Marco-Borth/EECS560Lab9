@@ -49,9 +49,11 @@ void LeftistHeap<T>::add(BinaryNode<T>* curSubTree, T entry) {
 	if (m_root == nullptr) {
 		m_root = new BinaryNode<T>(entry);
 		nodeCount++;
-	} else {
+	}
+	else {
 		BinaryNode<T>* temp = new BinaryNode<T>(entry);
-		merge(temp, m_root);
+		nodeCount++;
+		m_root = merge(temp, m_root);
 		//addRec(m_root, m_root, entry, 0);
 	}
 }
@@ -121,28 +123,10 @@ void LeftistHeap<T>::remove() {
 	else {
 		BinaryNode<T>* h1 = m_root->getLeft();
 		BinaryNode<T>* h2 = m_root->getRight();
-		/*
-		BinaryNode<T>* h1rightChild = h1->getRight();
-		BinaryNode<T>* h2rightChild = h2->getRight();
-		h1->inheritRight(nullptr);
-		h2->inheritRight(nullptr);
-		*/
 		m_root->~BinaryNode();
 		nodeCount--;
 
 		m_root = merge(h1, h2);
-
-		/*
-		if (h1->getEntry() > h2->getEntry()) {
-			m_root = merge(h1rightChild, h2rightChild);
-			m_root = merge(h1, h1rightChild);
-			m_root = merge(h2, h1);
-		} else {
-			m_root = merge(h2rightChild, h1rightChild);
-			m_root = merge(h2, h2rightChild);
-			m_root = merge(h1, h2);
-		}
-		*/
 	}
 
 	if (nodeCount == 0) {
@@ -154,10 +138,10 @@ void LeftistHeap<T>::remove() {
 
 template <typename T>
 BinaryNode<T>* LeftistHeap<T>::merge(BinaryNode<T>* h1, BinaryNode<T>* h2) {
-	if (h1 != nullptr && h2 == nullptr) {
-		return h1;
-	} else if (h1 == nullptr && h2 != nullptr) {
+	if (h1 == nullptr) {
 		return h2;
+	} else if (h2 == nullptr) {
+		return h1;
 	} else if (h1 != nullptr && h2 != nullptr) {
 		if (h1->getEntry() < h2->getEntry()) {
 			BinaryNode<T>* temp = nullptr;

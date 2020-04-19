@@ -103,7 +103,7 @@ void Operator::run() {
             deleteTime[i] = 0.000000;
           }
 
-          for (int j = 3; j < size; j++) {
+          for (int j = 0; j < size; j++) {
             if (j < 5) {
               start = clock();
               inputSize[j] = floor (0.1 * m * (j + 1));
