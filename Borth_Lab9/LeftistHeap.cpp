@@ -4,7 +4,7 @@
  * Author: Marco Borth
  * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
  * Description:  LeftistHeap methods are defined.
- * Date: 4/14/24
+ * Date: 4/17/20
  *
  ---------------------------------------------------------------------------- */
 
@@ -54,46 +54,7 @@ void LeftistHeap<T>::add(BinaryNode<T>* curSubTree, T entry) {
 		BinaryNode<T>* temp = new BinaryNode<T>(entry);
 		nodeCount++;
 		m_root = merge(temp, m_root);
-		//addRec(m_root, m_root, entry, 0);
 	}
-}
-
-template <typename T>
-void LeftistHeap<T>::addRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, T entry, int depth) {
-	depth++;
-	if (curSubTree->getRight() != nullptr) {
-		addRec(curSubTree, curSubTree->getRight(), entry, depth);
-	} else {
-		if (entry >= curSubTree->getEntry()) {
-			if (curSubTree->getLeft() == nullptr) {
-				curSubTree->setLeft(entry);
-			} else {
-				curSubTree->setRight(entry);
-			}
-		} else {
-			if (curSubTree != m_root) {
-				parentSubTree->inheritRight(nullptr);
-				parentSubTree->setRight(entry);
-				parentSubTree->getRight()->inheritLeft(curSubTree);
-			} else {
-				BinaryNode<T>* leftChild = m_root;
-				m_root = nullptr;
-				m_root = new BinaryNode<T>(entry);
-				m_root->inheritLeft(leftChild);
-			}
-		}
-		nodeCount++;
-	}
-
-	if (curSubTree->getRank() == 2 && curSubTree->getLeft()->getRank() < curSubTree->getRight()->getRank()) {
-		BinaryNode<T>* leftChild = curSubTree->getLeft();
-		BinaryNode<T>* rightChild = curSubTree->getRight();
-		curSubTree->inheritLeft(rightChild);
-		curSubTree->inheritRight(leftChild);
-	}
-
-	if (depth > m_height)
-		m_height = depth;
 }
 
 template <typename T>
@@ -145,14 +106,13 @@ BinaryNode<T>* LeftistHeap<T>::merge(BinaryNode<T>* h1, BinaryNode<T>* h2) {
 	} else if (h1 != nullptr && h2 != nullptr) {
 		if (h1->getEntry() < h2->getEntry()) {
 			BinaryNode<T>* temp = nullptr;
-			temp = mergeNow(h1, h2);
+			temp = mergeRec(h1, h2);
 			return temp;
 		} else {
 			BinaryNode<T>* temp = nullptr;
-			temp = mergeNow(h2, h1);
+			temp = mergeRec(h2, h1);
 			return temp;
 		}
-		//mergeRec(h1, h1, h2);
 		return h1;
 	} else {
 		return nullptr;
@@ -160,7 +120,7 @@ BinaryNode<T>* LeftistHeap<T>::merge(BinaryNode<T>* h1, BinaryNode<T>* h2) {
 }
 
 template <typename T>
-BinaryNode<T>* LeftistHeap<T>::mergeNow(BinaryNode<T>* h1, BinaryNode<T>* h2)
+BinaryNode<T>* LeftistHeap<T>::mergeRec(BinaryNode<T>* h1, BinaryNode<T>* h2)
 {
     if (h1->getLeft() == nullptr)
         h1->inheritLeft(h2);
@@ -174,38 +134,6 @@ BinaryNode<T>* LeftistHeap<T>::mergeNow(BinaryNode<T>* h1, BinaryNode<T>* h2)
 				}
     }
     return h1;
-}
-
-template <typename T>
-void LeftistHeap<T>::mergeRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree) {
-	if (curSubTree->getRight() != nullptr) {
-		mergeRec(curSubTree, curSubTree->getRight(), otherSubTree);
-	} else {
-		if (otherSubTree->getEntry() >= curSubTree->getEntry()) {
-			if (curSubTree->getLeft() == nullptr) {
-				curSubTree->inheritLeft(otherSubTree);
-			} else {
-				curSubTree->inheritRight(otherSubTree);
-			}
-		} else {
-			if (curSubTree != m_root) {
-				parentSubTree->inheritRight(nullptr);
-				parentSubTree->inheritRight(otherSubTree);
-				parentSubTree->getRight()->inheritLeft(curSubTree);
-			} else {
-				BinaryNode<T>* leftChild = m_root;
-				m_root = otherSubTree;
-				m_root->inheritLeft(leftChild);
-			}
-		}
-	}
-
-	if (curSubTree->getRank() == 2 && curSubTree->getLeft()->getRank() < curSubTree->getRight()->getRank()) {
-		BinaryNode<T>* leftChild = curSubTree->getLeft();
-		BinaryNode<T>* rightChild = curSubTree->getRight();
-		curSubTree->inheritLeft(rightChild);
-		curSubTree->inheritRight(leftChild);
-	}
 }
 
 template <typename T>

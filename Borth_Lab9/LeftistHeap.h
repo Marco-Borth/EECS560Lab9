@@ -4,7 +4,7 @@
  * Author: Marco Borth
  * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
  * Description:  LeftistHeap Template Class is defined.
- * Date: 4/14/20
+ * Date: 4/17/20
  *
  ---------------------------------------------------------------------------- */
 
@@ -25,20 +25,7 @@ private:
   BinaryNode<T>* m_root;
   int nodeCount, m_height;
 
-/*
-* @pre add calls addRec.
-* @param curSubTree is a valid BinaryNode<T> pointer.
-* @param entry is a valid T object.
-* @post if entry < curSubTree->getEntry(), a BinaryNode is added to the left pointer of curSubTree if left == nullptr.
-* @post else if entry > curSubTree->getEntry(), a BinaryNode is added to the right pointer of curSubTree if right == nullptr.
-* @post if left or right != nullptr, the BinaryNode is to be then added to either curSubTree->getLeft or curSubTree-> getRight.
-* @post no duplicates are to be allowed.
-*/
-  void addRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, T entry, int depth);
-
-  BinaryNode<T>* mergeNow(BinaryNode<T>* h1, BinaryNode<T>* h2);
-
-  void mergeRec(BinaryNode<T>* parentSubTree, BinaryNode<T>* curSubTree, BinaryNode<T>* otherSubTree);
+  BinaryNode<T>* mergeRec(BinaryNode<T>* h1, BinaryNode<T>* h2);
 
 /*
 * @pre none.

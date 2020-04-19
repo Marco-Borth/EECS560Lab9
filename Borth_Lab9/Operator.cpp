@@ -2,9 +2,9 @@
  *
  * File Name:  Operator.cpp
  * Author: Marco Borth
- * Assignment:   EECS-560 Lab 4 – Implementation of Binary Tree
- * Description:  Operator Class will either run the Interactive program for a Hash Table (Closed Hashing)
- * Date: 2/22/20
+ * Assignment:   EECS 560 Lab 9 – Experimental Profiling on Leftist and Skew Heaps
+ * Description:  Operator Class will either run the Interactive program for Heaps.
+ * Date: 4/19/20
  *
  ---------------------------------------------------------------------------- */
 
@@ -31,7 +31,7 @@ void Operator::printCommands() {
 }
 
 void Operator::run() {
-  cout << "\nWelcome to the Interactive Hash Table Program!\n\n";
+  cout << "\nWelcome to the Interactive Heap Program!\n\n";
 
   do {
     printCommands();
