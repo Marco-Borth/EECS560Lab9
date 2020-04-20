@@ -197,6 +197,7 @@ void Operator::run() {
   } while(option != 6);
 
   lHeap.clear();
+  sqHeap.clear();
 
   cout << "\nBye Bye!\n";
   cout << "\nHave a nice day!...\n\n";

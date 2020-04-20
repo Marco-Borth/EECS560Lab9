@@ -84,6 +84,8 @@ void LeftistHeap<T>::remove() {
 	else {
 		BinaryNode<T>* h1 = m_root->getLeft();
 		BinaryNode<T>* h2 = m_root->getRight();
+		m_root->inheritLeft(nullptr);
+		m_root->inheritRight(nullptr);
 		m_root->~BinaryNode();
 		nodeCount--;
 
